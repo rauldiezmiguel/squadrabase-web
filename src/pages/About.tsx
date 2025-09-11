@@ -97,7 +97,7 @@ const About = () => {
                 {/* Imagen lateral */}
                 <div className="flex-1 text-center">
                 <img
-                    src="/images/nuestraMision.png"
+                    src="/images/nuestraMision.jpg"
                     alt="Nuestra misión - fútbol base"
                     className="mx-auto rounded-xl shadow-lg max-w-full"
                 />
