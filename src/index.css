@@ -78,3 +78,37 @@
   background-size: 200% 200%;
   animation: gradient 5s ease infinite;
 }
+
+#mockup-container { width: var(--mockup-width) !important; }
+
+#mockup-text-left, #mockup-text-right { position: fixed; top: 50%; transform: translateY(-50%); max-width: 320px; }
+#mockup-text-left { font-size: 2rem; font-weight: 700; color: var(--primary-color); text-shadow: 2px 2px 6px rgba(0,0,0,0.15); right: calc(50% + (var(--mockup-width) / 2) + var(--side-gap)); text-align: center; white-space: pre-line; }
+#mockup-text-right { font-size: 1.1rem; font-weight: 500; color: var(--secondary-color); background-color: rgba(255,255,255,0.4); padding: 0.5rem 1rem; border-radius: 8px; left: calc(50% + (var(--mockup-width) / 2) + var(--side-gap)); text-align: left; white-space: pre-line; }
+
+@media (max-width: 900px) { :root { --side-gap: 12px; } #mockup-text-left, #mockup-text-right { max-width: 260px; } }
+@media (max-width: 680px) {
+  #mockup-text-left, #mockup-text-right { position: fixed; max-width: 80vw; left: 50% !important; right: auto !important; transform: translate(-50%, -50%); }
+  #mockup-text-left { top: calc(50% + 140px); }
+  #mockup-text-right { top: calc(50% + 200px); }
+}
+
+.split-left, .split-right { display: inline-block; transition: transform 0.6s ease, opacity 0.6s ease; }
+.split-left { transform-origin: left center; }
+.split-right { transform-origin: right center; }
+.split-hidden .split-left { transform: translateX(-120%) rotate(-10deg); opacity: 0; }
+.split-hidden .split-right { transform: translateX(120%) rotate(10deg); opacity: 0; }
+
+#intro-title h1 { font-size: 7rem; font-weight: bold; text-align: center; transition: transform 0.6s ease, opacity 0.6s ease; }
+#intro-title h1.split-hidden { transform: scaleY(0); opacity: 0; }
+
+/* small utilities for fade and float */
+#mockup-image { transition: opacity 700ms ease; }
+
+/* hamburger X animation */
+#menu-btn.open span:nth-child(1) { transform: rotate(45deg) translateY(8px); }
+#menu-btn.open span:nth-child(2) { opacity: 0; }
+#menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translateY(-8px); }
+
+/* end overlay transitions */
+#tutorial-end { transition: opacity 700ms ease; }
+#tutorial-end > div { transition: transform 700ms ease; }

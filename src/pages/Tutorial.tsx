@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import useTutorialScroll from "../hooks/useTutorialScroll";
+import { useTutorialScroll } from "../hooks/useTutorialScroll";
 import useScrollDirection from "../hooks/useScrollDirection";
 
-const mockups = [
+export default function Tutorial() {
+
+  const mockups = [
     "./images/mockup/mockup1.png",
     "./images/mockup/mockup2.png",
     "./images/mockup/mockup3.png",
@@ -86,6 +88,7 @@ const mockups = [
     "./images/mockup/mockup56.png",
     "./images/mockup/mockup67.png",
     "./images/mockup/mockup68.png",
+    "./images/logoSquadraSinFondo.png"
   ];
 
   const textsLeft = [
@@ -254,136 +257,126 @@ const mockups = [
     "Te dirige a esta pantalla donde te manda poner tu contraseña y la contraseña nueva dos veces.\n\nUna vez realizado hay que pulsar sobre el botón 'Guardar cambios'."
   ];
 
-export default function Tutorial() {
-  const { currentIndex, tutorialEndRef } = useTutorialScroll(mockups.length);
-  const scrollDirection = useScrollDirection(); // ✅ Usamos solo la dirección
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const [started, setStarted] = useState(false);
-  const [showTutorialContent, setShowTutorialContent] = useState(false);
-
-  // Primer scroll -> iniciar animación del título
-  useEffect(() => {
-    const onFirstScroll = () => {
-      setStarted(true);
-      window.removeEventListener("scroll", onFirstScroll);
-    };
-    window.addEventListener("scroll", onFirstScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onFirstScroll);
-  }, []);
-
-  // Mostrar tutorial tras animación
-  useEffect(() => {
-    let t: number | undefined;
-    if (started) {
-      t = window.setTimeout(() => setShowTutorialContent(true), 900);
-    }
-    return () => {
-      if (t) window.clearTimeout(t);
-    };
-  }, [started]);
-
-  // Variantes Framer Motion
-  const leftVariants = {
-    center: { x: "0vw", opacity: 1 },
-    split: {
-      x: "-120vw",
-      opacity: 0,
-      transition: { duration: 0.8, ease: "easeInOut" as const },
-    },
+  const refs = {
+    mockupImgRef: useRef(null),
+    textLeftRef: useRef(null),
+    textRightRef: useRef(null),
+    headerRef: useRef(null),
+    introTitleRef: useRef(null),
+    tutorialEndRef: useRef(null),
+    tutorialEndCardRef: useRef(null),
   };
 
-  const rightVariants = {
-    center: { x: "0vw", opacity: 1 },
-    split: {
-      x: "120vw",
-      opacity: 0,
-      transition: { duration: 0.8, ease: "easeInOut" as const },
-    },
-  };
+  const {
+    mockupImgRef,
+    textLeftRef,
+    textRightRef,
+    headerRef,
+    introTitleRef,
+    tutorialEndRef,
+    tutorialEndCardRef,
+  } = refs;
 
-  // Determinar variante según scroll
-  const titleVariant =
-    started && scrollDirection === "down" ? "split" : "center";
+  useTutorialScroll({
+    mockups,
+    textsLeft,
+    textsRight,
+    currentIndex,
+    setCurrentIndex,
+    refs,
+  });
 
   return (
-    <>
-      <Header />
-
-      {/* INTRO */}
-      <section className="h-screen flex justify-center items-center bg-[#F9FAFB] relative overflow-hidden">
-        <motion.h1
-          className="text-[150px] font-bold text-[#263238] flex gap-2 relative whitespace-nowrap"
-          initial="center"
-          animate={titleVariant}
-          style={{ pointerEvents: "none" }}
-        >
-          <motion.span
-            variants={leftVariants}
-            className="block"
-            style={{ display: "inline-block" }}
-          >
-            Tutorial
-          </motion.span>
-
-          <motion.span
-            variants={rightVariants}
-            className="block bg-clip-text text-transparent bg-gradient-to-r from-[#263238] to-[#455A64] ml-6"
-            style={{ display: "inline-block" }}
-          >
-            Squadra Base
-          </motion.span>
-        </motion.h1>
-      </section>
-
-      {/* TUTORIAL */}
-      {showTutorialContent && (
-        <section className="min-h-screen relative bg-[#F9FAFB]">
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] flex justify-center items-center z-40 pt-24">
-            <motion.img
-              key={currentIndex}
-              src={mockups[currentIndex]}
-              alt="Tutorial mockup"
-              initial={{ y: 200, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -120, opacity: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="w-full h-auto"
-            />
-          </div>
-
-          <div className="fixed top-1/2 left-[8%] -translate-y-1/2 w-[280px] text-lg text-[#263238] z-30 text-right">
-            {textsLeft[currentIndex]}
-          </div>
-
-          <div className="fixed top-1/2 right-[8%] -translate-y-1/2 w-[280px] text-lg text-[#263238] z-30 text-left">
-            {textsRight[currentIndex]}
-          </div>
-        </section>
-      )}
-
-      {/* FIN DEL TUTORIAL */}
-      <section
-        ref={tutorialEndRef}
-        className="fixed inset-0 flex justify-center items-center bg-black/40 opacity-0 pointer-events-none transition-opacity duration-700 z-50"
+    <div className="min-h-screen bg-[var(--background-color)]">
+      {/* HEADER */}
+      <header
+        ref={headerRef}
+        id="main-header"
+        className="w-full fixed top-0 left-0 z-50 transition-transform duration-300 bg-white shadow-md"
+        style={{ transitionProperty: 'transform', transform: 'translateY(0)' }}
       >
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md text-center scale-90 transition-transform duration-700">
-          <h2 className="text-3xl font-bold mb-4 text-[#263238]">
-            ¡Enhorabuena, has llegado al final del tutorial!
-          </h2>
-          <p className="text-lg mb-6 text-[#455A64]">
-            Ahora ya sabes cómo sacarle el máximo partido a{" "}
-            <strong>Squadra Base</strong>.
-          </p>
-          <a
-            href="/"
-            className="bg-[#263238] hover:bg-[#455A64] text-white font-semibold py-2 px-6 rounded-lg shadow-md transition"
+        <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
+          <div className="flex items-center gap-3">
+            <img src="./images/logoSquadraSinFondo.png" alt="Logo Squadra" className="w-14 h-14 md:w-20 md:h-20 rounded-lg" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold" style={{ color: 'var(--primary-color)', fontFamily: "'Segoe UI', sans-serif" }}>Squadra Base</h1>
+          </div>
+
+          <button
+            id="menu-btn"
+            onClick={() => setMenuOpen(v => !v)}
+            className={`relative w-10 h-10 bg-white flex flex-col justify-center items-center md:hidden group ${menuOpen ? 'open' : ''}`}
           >
-            Ir a la aplicación
-          </a>
+            <span className="block w-7 h-0.5 bg-[var(--primary-color)] rounded-full transition-all duration-300 origin-center"></span>
+            <span className="block w-7 h-0.5 bg-[var(--primary-color)] rounded-full mt-1.5 transition-all duration-300 origin-center"></span>
+            <span className="block w-7 h-0.5 bg-[var(--primary-color)] rounded-full mt-1.5 transition-all duration-300 origin-center"></span>
+          </button>
+
+          <nav id="menu" className="hidden md:flex gap-8 text-lg font-medium">
+            <a href="./" className="hover:text-blue-500 transition-all duration-200">Inicio</a>
+            <a href="./about" className="hover:text-blue-500 transition-all duration-200">Sobre nosotros</a>
+            <a href="./tutorial" className="hover:text-blue-500 transition-all duration-200">Tutorial</a>
+          </nav>
+        </div>
+
+        {/* Mobile menu */}
+        <div className={`md:hidden w-64 absolute top-16 right-4 transition-all ${menuOpen ? '' : 'hidden'}`}>
+          <div className="flex flex-col bg-white rounded-xl shadow-2xl overflow-hidden">
+            <a href="./index.html" className="px-6 py-4 text-[var(--primary-color)] font-semibold border-b border-gray-200 hover:bg-gradient-to-r hover:from-[var(--primary-color)] hover:to-[var(--secondary-color)] hover:text-white transition-all">Inicio</a>
+            <a href="./sobreNosotros.html" className="px-6 py-4 text-[var(--primary-color)] font-semibold border-b border-gray-200 hover:bg-gradient-to-r hover:from-[var(--primary-color)] hover:to-[var(--secondary-color)] hover:text-white transition-all">Sobre nosotros</a>
+            <a href="./tutorial.html" className="px-6 py-4 text-[var(--primary-color)] font-semibold hover:bg-gradient-to-r hover:from-[var(--primary-color)] hover:to-[var(--secondary-color)] hover:text-white transition-all">Tutorial</a>
+          </div>
+        </div>
+      </header>
+
+      {/* INTRO TITLE */}
+      <main className="h-[1600vh]">
+        <section id="intro-title" ref={introTitleRef} className="h-screen flex justify-center items-center bg-[var(--background-color)]">
+          <h1 className="text-[80px] md:text-[150px] font-bold text-[var(--primary-color)] flex gap-2 overflow-hidden">
+            <span className="split-left">Tutorial</span>
+            <span className="split-right bg-clip-text text-transparent bg-gradient-to-r from-[var(--primary-color)] to-[var(--secondary-color)] animate-gradient">Squadra Base</span>
+          </h1>
+        </section>
+
+        <section id="tutorial-content" className="min-h-screen relative">
+          {/* mockup fixed center */}
+          <div id="mockup-container" className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 w-[350px] h-auto flex justify-center items-center">
+            <img ref={mockupImgRef} id="mockup-image" src="" alt="Tutorial mockup" className="w-full h-auto transition-opacity duration-700 opacity-0" />
+          </div>
+
+          <div ref={textLeftRef} id="mockup-text-left" className="fixed top-1/2 left-[8%] -translate-y-1/2 w-[280px] text-lg text-[var(--primary-color)] opacity-0 transition-opacity duration-700 z-30 text-right font-bold whitespace-pre-line"></div>
+
+          <div ref={textRightRef} id="mockup-text-right" className="fixed top-1/2 right-[8%] -translate-y-1/2 w-[280px] text-lg text-[var(--secondary-color)] opacity-0 transition-opacity duration-700 z-30 text-left bg-white/40 p-2 rounded whitespace-pre-line"></div>
+        </section>
+      </main>
+
+      {/* tutorial end overlay */}
+      <section id="tutorial-section">
+        <div ref={tutorialEndRef} id="tutorial-end" className="fixed inset-0 flex justify-center items-center bg-black/40 opacity-0 pointer-events-none transition-opacity duration-700 z-50">
+          <div ref={tutorialEndCardRef} className="bg-[var(--background-color)] rounded-2xl shadow-2xl p-8 max-w-md text-center scale-90 transition-transform duration-700">
+            <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--primary-color)', fontFamily: 'var(--font-family)' }}>
+              ¡Enhorabuena, has llegado al final del tutorial!
+            </h2>
+            <p className="text-lg mb-6" style={{ color: 'var(--secondary-color)', lineHeight: 1.6 }}>
+              Ahora ya sabes cómo sacarle el máximo partido a <strong>Squadra Base</strong>.<br />Es hora de ponerlo en práctica y llevar a tu equipo al siguiente nivel.
+            </p>
+            <a href="./" className="bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] text-white font-semibold py-2 px-6 rounded-lg shadow-md transition">Ir a la aplicación</a>
+          </div>
         </div>
       </section>
 
-      <Footer />
-    </>
+      {/* FOOTER */}
+      <footer style={{ backgroundColor: "#263238" }} className="w-full relative z-50">
+        <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <span className="text-[#B0BEC5] text-sm">© 2025 Squadra Base. Todos los derechos reservados.</span>
+          <div className="flex gap-6 text-sm">
+            <a href="./privacidad.html" className="text-[#B0BEC5] hover:text-gray transition">Políticas de privacidad</a>
+            <a href="./terminosCondiciones.html" className="text-[#B0BEC5] hover:text-gray transition">Términos y condiciones</a>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
