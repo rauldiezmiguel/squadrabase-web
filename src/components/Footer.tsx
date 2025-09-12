@@ -12,13 +12,13 @@ const Footer = () => {
         {/* Enlaces de privacidad y términos */}
         <div className="flex flex-wrap gap-4 text-xs sm:text-sm">
           <Link
-            to="/privacy"
+            to="/politicasDePrivacidad"
             className="text-[#B0BEC5] hover:text-gray-500 transition-colors"
           >
             Políticas de privacidad
           </Link>
           <Link
-            to="/terms"
+            to="/terminosYCondiciones"
             className="text-[#B0BEC5] hover:text-gray-500 transition-colors"
           >
             Términos y condiciones

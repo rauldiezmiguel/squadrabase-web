@@ -6,6 +6,8 @@ import Footer from './components/Footer';
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Tutorial from "./pages/Tutorial";
+import Privacidad from "./pages/Privacidad";
+import TerminosCondiciones from "./pages/TerminosCondiciones";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/tutorial" element={<Tutorial />} />
+            <Route path="/politicasDePrivacidad" element={<Privacidad />} />
+            <Route path="/terminosYCondiciones" element={<TerminosCondiciones />} />
           </Routes>
         </main>
       </div>
