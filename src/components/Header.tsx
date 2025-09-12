@@ -5,7 +5,7 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full fixed z-50 backdrop-blur-md transition-colors duration-300 bg-white shadow-md">
+    <header className="fixed top-0 left-0 w-full z-50 backdrop-blur-md transition-colors duration-300 bg-[#4B6A79]/25 shadow-md">
       <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
         {/* Logo */}
         <div className="flex items-center gap-3">
@@ -46,13 +46,13 @@ const Header = () => {
 
         {/* Navegación Escritorio */}
         <nav className="hidden md:flex gap-8 text-lg font-medium">
-          <Link to="/" className="hover:text-blue-500 transition-all duration-200">
+          <Link to="/" className="hover:text-white transition-all duration-200">
             Inicio
           </Link>
-          <Link to="/about" className="hover:text-blue-500 transition-all duration-200">
+          <Link to="/about" className="hover:text-white transition-all duration-200">
             Sobre nosotros
           </Link>
-          <Link to="/tutorial" className="hover:text-blue-500 transition-all duration-200">
+          <Link to="/tutorial" className="hover:text-white transition-all duration-200">
             Tutorial
           </Link>
         </nav>
